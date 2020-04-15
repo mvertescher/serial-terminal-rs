@@ -1,0 +1,18 @@
+[package]
+authors = ["Matt Vertescher <mvertescher@gmail.com>"]
+description = "An interactive serial terminal"
+edition = "2018"
+name = "serial-terminal"
+version = "0.1.0"
+
+[dependencies]
+bytes = "0.5.4"
+futures = "0.3.4"
+structopt = "0.3.13"
+tokio-serial = "4.3.3"
+tokio-util = { version = "0.3.1", features = ["codec"], default-features = false }
+
+[dependencies.tokio]
+default-features = false
+features = ["io-util", "io-std", "macros"]
+version = "0.2.18"
