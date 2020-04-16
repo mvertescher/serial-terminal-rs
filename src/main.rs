@@ -59,13 +59,14 @@ async fn main() {
     let mut args = env::args();
     let tty_path = args.nth(1).unwrap_or_else(|| DEFAULT_TTY.into());
 
-    let mut settings = tokio_serial::SerialPortSettings::default();
-    settings.baud_rate = 921600;
-    settings.data_bits = tokio_serial::DataBits::Eight;
-    settings.flow_control = tokio_serial::FlowControl::None;
-    settings.parity = tokio_serial::Parity::None;
-    settings.stop_bits = tokio_serial::StopBits::One;
-    settings.timeout = std::time::Duration::from_secs(5);
+    let settings = tokio_serial::SerialPortSettings {
+        baud_rate: 921600,
+        data_bits: tokio_serial::DataBits::Eight,
+        flow_control: tokio_serial::FlowControl::None,
+        parity: tokio_serial::Parity::None,
+        stop_bits: tokio_serial::StopBits::One,
+        timeout: std::time::Duration::from_secs(5),
+    };
 
     let mut serial = tokio_serial::Serial::from_path(tty_path, &settings).unwrap();
 
