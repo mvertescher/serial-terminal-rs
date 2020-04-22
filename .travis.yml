@@ -11,6 +11,10 @@ matrix:
 env:
   global:
     - RUST_BACKTRACE: full
+addons:
+  apt:
+    packages:
+      - pkg-config
 notifications:
   email:
     on_success: never
