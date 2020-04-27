@@ -1,17 +1,20 @@
 //! An interactive serial terminal
 
+use std::path::PathBuf;
+use std::{io, str};
+
 use bytes::BufMut;
 use bytes::BytesMut;
 use futures::stream::StreamExt;
-use std::{env, io, str};
 use structopt::StructOpt;
 use tokio_util::codec::{Decoder, Encoder};
 use tokio_util::codec::{FramedRead, FramedWrite, LinesCodec, LinesCodecError};
 
-const DEFAULT_TTY: &str = "/dev/ttyACM0";
-
 #[derive(Debug, StructOpt)]
-struct Opt {}
+struct Opt {
+    /// Path to the serial device
+    tty: PathBuf,
+}
 
 struct SerialReadCodec;
 
@@ -54,10 +57,8 @@ impl Encoder<String> for SerialWriteCodec {
 
 #[tokio::main]
 async fn main() {
-    let _ = Opt::from_args();
-
-    let mut args = env::args();
-    let tty_path = args.nth(1).unwrap_or_else(|| DEFAULT_TTY.into());
+    let opt = Opt::from_args();
+    let tty_path = opt.tty;
 
     let settings = tokio_serial::SerialPortSettings {
         baud_rate: 921600,
