@@ -12,6 +12,9 @@ use tokio_util::codec::{FramedRead, FramedWrite, LinesCodec, LinesCodecError};
 
 #[derive(Debug, StructOpt)]
 struct Opt {
+    /// Baud rate
+    #[structopt(short, long, default_value="921600")]
+    baud: u32,
     /// Path to the serial device
     tty: PathBuf,
 }
@@ -61,7 +64,7 @@ async fn main() {
     let tty_path = opt.tty;
 
     let settings = tokio_serial::SerialPortSettings {
-        baud_rate: 921600,
+        baud_rate: opt.baud,
         data_bits: tokio_serial::DataBits::Eight,
         flow_control: tokio_serial::FlowControl::None,
         parity: tokio_serial::Parity::None,
