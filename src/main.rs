@@ -7,10 +7,13 @@ use bytes::BufMut;
 use bytes::BytesMut;
 use futures::stream::StreamExt;
 use structopt::StructOpt;
+use structopt::clap::AppSettings;
 use tokio_util::codec::{Decoder, Encoder};
 use tokio_util::codec::{FramedRead, FramedWrite, LinesCodec, LinesCodecError};
 
 #[derive(Debug, StructOpt)]
+#[structopt(author, about)]
+#[structopt(global_settings = &[AppSettings::ColoredHelp])]
 struct Opt {
     /// Baud rate
     #[structopt(short, long, default_value="921600")]
