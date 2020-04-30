@@ -32,9 +32,8 @@ impl Decoder for SerialReadCodec {
         let newline = src.as_ref().iter().position(|b| *b == b'\n');
         if let Some(n) = newline {
             let line = src.split_to(n + 1);
-            let line = &line[..line.len() - 2];
             return match str::from_utf8(line.as_ref()) {
-                Ok(s) => Ok(Some(s.to_string())),
+                Ok(s) => Ok(Some(s.trim_end().to_string())),
                 Err(_) => Err(LinesCodecError::Io(io::Error::new(
                     io::ErrorKind::Other,
                     "Invalid String",
