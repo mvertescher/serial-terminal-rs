@@ -6,8 +6,8 @@ use std::{io, str};
 use bytes::BufMut;
 use bytes::BytesMut;
 use futures::stream::StreamExt;
-use structopt::StructOpt;
 use structopt::clap::AppSettings;
+use structopt::StructOpt;
 use tokio_util::codec::{Decoder, Encoder};
 use tokio_util::codec::{FramedRead, FramedWrite, LinesCodec, LinesCodecError};
 
@@ -16,7 +16,7 @@ use tokio_util::codec::{FramedRead, FramedWrite, LinesCodec, LinesCodecError};
 #[structopt(global_settings = &[AppSettings::ColoredHelp])]
 struct Opt {
     /// Baud rate
-    #[structopt(short, long, default_value="921600")]
+    #[structopt(short, long, default_value = "921600")]
     baud: u32,
     /// Path to the serial device
     tty: PathBuf,
