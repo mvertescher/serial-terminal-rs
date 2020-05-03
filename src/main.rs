@@ -18,8 +18,12 @@ struct Opt {
     /// Baud rate
     #[structopt(short, long, default_value = "921600")]
     baud: u32,
+    /// Lists available serial ports
+    #[structopt(short, long)]
+    list: bool,
     /// Path to the serial device
-    tty: PathBuf,
+    #[structopt(short, long)]
+    tty: Option<PathBuf>,
 }
 
 struct SerialReadCodec;
@@ -63,7 +67,24 @@ impl Encoder<String> for SerialWriteCodec {
 #[tokio::main]
 async fn main() {
     let opt = Opt::from_args();
-    let tty_path = opt.tty;
+
+    let ports = serialport::available_ports().unwrap();
+
+    if ports.is_empty() {
+        eprintln!("No serial ports found!");
+        std::process::exit(1);
+    }
+
+    if opt.list {
+        for port in ports {
+            println!("{:?}", port);
+        }
+        return;
+    }
+
+    let tty_path = opt
+        .tty
+        .unwrap_or(PathBuf::from(&ports.first().unwrap().port_name));
 
     let settings = tokio_serial::SerialPortSettings {
         baud_rate: opt.baud,
