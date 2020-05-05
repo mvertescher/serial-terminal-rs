@@ -95,6 +95,7 @@ async fn main() {
         timeout: std::time::Duration::from_secs(5),
     };
 
+    println!("Opening serial connection to device {:?}", tty_path);
     let mut serial = tokio_serial::Serial::from_path(tty_path, &settings).unwrap();
 
     serial
