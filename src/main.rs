@@ -8,6 +8,7 @@ use bytes::BytesMut;
 use futures::stream::StreamExt;
 use structopt::clap::AppSettings;
 use structopt::StructOpt;
+use strum::{EnumString, EnumVariantNames};
 use tokio_util::codec::{Decoder, Encoder};
 use tokio_util::codec::{FramedRead, FramedWrite, LinesCodec, LinesCodecError};
 
@@ -18,12 +19,37 @@ struct Opt {
     /// Baud rate
     #[structopt(short, long, default_value = "921600")]
     baud: u32,
+    /// End of line transformation (cr, lf, crlf)
+    #[structopt(long, default_value = "crlf")]
+    eol: Eol,
     /// Lists available serial ports
     #[structopt(short, long)]
     list: bool,
     /// Path to the serial device
     #[structopt(short, long)]
     tty: Option<PathBuf>,
+}
+
+/// End of line character options
+#[derive(Debug, EnumString, EnumVariantNames, StructOpt)]
+#[strum(serialize_all = "snake_case")]
+enum Eol {
+    /// Carriage return
+    Cr,
+    /// Carriage return, line feed
+    Crlf,
+    /// Line feed
+    Lf,
+}
+
+impl Eol {
+    fn bytes(&self) -> &[u8] {
+        match self {
+            Self::Cr => &b"\r"[..],
+            Self::Crlf => &b"\r\n"[..],
+            Self::Lf => &b"\n"[..],
+        }
+    }
 }
 
 struct SerialReadCodec;
@@ -49,7 +75,7 @@ impl Decoder for SerialReadCodec {
     }
 }
 
-struct SerialWriteCodec;
+struct SerialWriteCodec(Eol);
 
 impl Encoder<String> for SerialWriteCodec {
     type Error = LinesCodecError;
@@ -57,8 +83,7 @@ impl Encoder<String> for SerialWriteCodec {
     fn encode(&mut self, line: String, buf: &mut BytesMut) -> Result<(), Self::Error> {
         buf.reserve(line.len());
         buf.put(line.as_bytes());
-        buf.put_u8(b'\r');
-        buf.put_u8(b'\n');
+        buf.put(self.0.bytes());
 
         Ok(())
     }
@@ -109,7 +134,7 @@ async fn main() {
 
     let (read, write) = tokio::io::split(serial);
     let stream = FramedRead::new(read, SerialReadCodec);
-    let sink = FramedWrite::new(write, SerialWriteCodec);
+    let sink = FramedWrite::new(write, SerialWriteCodec(opt.eol));
 
     let input = framed_stdin.forward(sink);
     let output = stream.forward(framed_stdout);
