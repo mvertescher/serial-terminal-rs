@@ -2,7 +2,23 @@
 
 > A very simple interactive serial terminal
 
-Currently a WIP.
+```text
+serial-terminal 0.0.0
+An interactive serial terminal
+
+USAGE:
+    serial-terminal [FLAGS] [OPTIONS]
+
+FLAGS:
+    -h, --help       Prints help information
+    -l, --list       Lists available serial ports
+    -V, --version    Prints version information
+
+OPTIONS:
+    -b, --baud <baud>    Baud rate [default: 921600]
+        --eol <eol>      End of line transformation (cr, lf, crlf) [default: crlf]
+    -t, --tty <tty>      Path to the serial device
+```
 
 ## License
 

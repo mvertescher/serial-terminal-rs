@@ -3,7 +3,7 @@ authors = ["Matt Vertescher <mvertescher@gmail.com>"]
 description = "An interactive serial terminal"
 edition = "2018"
 name = "serial-terminal"
-version = "0.1.0"
+version = "0.0.0"
 
 [dependencies]
 bytes = "0.5.4"

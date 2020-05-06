@@ -13,7 +13,7 @@ use tokio_util::codec::{Decoder, Encoder};
 use tokio_util::codec::{FramedRead, FramedWrite, LinesCodec, LinesCodecError};
 
 #[derive(Debug, StructOpt)]
-#[structopt(author, about)]
+#[structopt(about)]
 #[structopt(global_settings = &[AppSettings::ColoredHelp])]
 struct Opt {
     /// Baud rate
