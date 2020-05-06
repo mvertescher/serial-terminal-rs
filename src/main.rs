@@ -102,7 +102,7 @@ async fn main() {
 
     if opt.list {
         for port in ports {
-            println!("{:?}", port);
+            println!("{:#?}", port);
         }
         return;
     }
