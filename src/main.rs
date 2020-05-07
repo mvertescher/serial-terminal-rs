@@ -81,9 +81,10 @@ impl Encoder<String> for SerialWriteCodec {
     type Error = LinesCodecError;
 
     fn encode(&mut self, line: String, buf: &mut BytesMut) -> Result<(), Self::Error> {
-        buf.reserve(line.len());
+        let eol = self.0.bytes();
+        buf.reserve(line.len() + eol.len());
         buf.put(line.as_bytes());
-        buf.put(self.0.bytes());
+        buf.put(eol);
 
         Ok(())
     }
