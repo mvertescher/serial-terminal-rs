@@ -11,6 +11,11 @@ matrix:
 env:
   global:
     - RUST_BACKTRACE: full
+script:
+  - cargo build
+  - cargo test
+  - cargo doc
+  - cargo clippy
 addons:
   apt:
     packages:
