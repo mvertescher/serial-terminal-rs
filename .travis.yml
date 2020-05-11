@@ -11,6 +11,8 @@ matrix:
 env:
   global:
     - RUST_BACKTRACE: full
+before_script:
+  - rustup component add clippy
 script:
   - cargo build
   - cargo test
