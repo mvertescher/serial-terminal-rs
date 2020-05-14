@@ -6,6 +6,7 @@ use std::{io, str};
 use bytes::BufMut;
 use bytes::BytesMut;
 use futures::stream::StreamExt;
+use serialport::Parity;
 use structopt::clap::AppSettings;
 use structopt::StructOpt;
 use strum::{EnumString, EnumVariantNames};
@@ -25,6 +26,9 @@ struct Opt {
     /// Lists available serial ports
     #[structopt(short, long)]
     list: bool,
+    /// Parity checking (none/odd/even)
+    #[structopt(long, default_value = "none")]
+    parity: ParityOpt,
     /// Path to the serial device
     #[structopt(short, long)]
     tty: Option<PathBuf>,
@@ -48,6 +52,27 @@ impl Eol {
             Self::Cr => &b"\r"[..],
             Self::Crlf => &b"\r\n"[..],
             Self::Lf => &b"\n"[..],
+        }
+    }
+}
+
+#[derive(Debug, EnumString, EnumVariantNames, StructOpt)]
+#[strum(serialize_all = "snake_case")]
+enum ParityOpt {
+    /// No parity bit.
+    None,
+    /// Parity bit sets odd number of 1 bits.
+    Odd,
+    /// Parity bit sets even number of 1 bits.
+    Even,
+}
+
+impl From<ParityOpt> for Parity {
+    fn from(opt: ParityOpt) -> Self {
+        match opt {
+            ParityOpt::None => Parity::None,
+            ParityOpt::Odd => Parity::Odd,
+            ParityOpt::Even => Parity::Even,
         }
     }
 }
@@ -116,7 +141,7 @@ async fn main() {
         baud_rate: opt.baud,
         data_bits: tokio_serial::DataBits::Eight,
         flow_control: tokio_serial::FlowControl::None,
-        parity: tokio_serial::Parity::None,
+        parity: opt.parity.into(),
         stop_bits: tokio_serial::StopBits::One,
         timeout: std::time::Duration::from_secs(5),
     };
