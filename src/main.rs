@@ -4,8 +4,7 @@ use std::convert::TryFrom;
 use std::path::PathBuf;
 use std::{io, str};
 
-use bytes::BufMut;
-use bytes::BytesMut;
+use bytes::{BufMut, BytesMut};
 use futures::stream::StreamExt;
 use serialport::Parity;
 use structopt::clap::AppSettings;
