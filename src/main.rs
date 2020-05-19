@@ -1,5 +1,6 @@
 //! An interactive serial terminal
 
+use std::convert::TryFrom;
 use std::path::PathBuf;
 use std::{io, str};
 
@@ -10,6 +11,7 @@ use serialport::Parity;
 use structopt::clap::AppSettings;
 use structopt::StructOpt;
 use strum::{EnumString, EnumVariantNames};
+use tokio_serial::DataBits;
 use tokio_util::codec::{Decoder, Encoder};
 use tokio_util::codec::{FramedRead, FramedWrite, LinesCodec, LinesCodecError};
 
@@ -20,6 +22,9 @@ struct Opt {
     /// Baud rate
     #[structopt(short, long, default_value = "921600")]
     baud: u32,
+    /// Data bits (5, 6, 7, 8)
+    #[structopt(short, long, default_value = "8")]
+    data_bits: usize,
     /// End of line transformation (cr, lf, crlf)
     #[structopt(long, default_value = "crlf")]
     eol: Eol,
@@ -32,6 +37,22 @@ struct Opt {
     /// Path to the serial device
     #[structopt(short, long)]
     tty: Option<PathBuf>,
+}
+
+struct DataBitsExt(DataBits);
+
+impl TryFrom<usize> for DataBitsExt {
+    type Error = ();
+
+    fn try_from(value: usize) -> Result<Self, Self::Error> {
+        match value {
+            5 => Ok(Self(DataBits::Five)),
+            6 => Ok(Self(DataBits::Six)),
+            7 => Ok(Self(DataBits::Seven)),
+            8 => Ok(Self(DataBits::Eight)),
+            _ => Err(()),
+        }
+    }
 }
 
 /// End of line character options
@@ -139,7 +160,7 @@ async fn main() {
 
     let settings = tokio_serial::SerialPortSettings {
         baud_rate: opt.baud,
-        data_bits: tokio_serial::DataBits::Eight,
+        data_bits: DataBitsExt::try_from(opt.data_bits).unwrap().0,
         flow_control: tokio_serial::FlowControl::None,
         parity: opt.parity.into(),
         stop_bits: tokio_serial::StopBits::One,
