@@ -5,15 +5,15 @@ matrix:
     - os: linux
       rust: stable
       env: TARGET=x86_64-unknown-linux-gnu
-    - os: linux
-      rust: nightly
-      env: TARGET=x86_64-unknown-linux-gnu
+#    - os: linux
+#      rust: nightly
+#      env: TARGET=x86_64-unknown-linux-gnu
 env:
   global:
     - RUST_BACKTRACE: full
-jobs:
-  allow_failures:
-    - rust: nightly
+#jobs:
+#  allow_failures:
+#    - rust: nightly
 before_script:
   - rustup component add clippy
   - rustup component add rustfmt
