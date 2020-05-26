@@ -6,7 +6,7 @@ use std::{io, str};
 
 use bytes::{BufMut, BytesMut};
 use futures::stream::StreamExt;
-use serialport::Parity;
+use serialport::{FlowControl, Parity};
 use structopt::clap::AppSettings;
 use structopt::StructOpt;
 use strum::{EnumString, EnumVariantNames};
@@ -27,6 +27,9 @@ struct Opt {
     /// End of line transformation (cr, lf, crlf)
     #[structopt(long, default_value = "crlf")]
     eol: Eol,
+    /// Flow control
+    #[structopt(long, default_value = "none")]
+    flow_control: FlowControlOpt,
     /// Lists available serial ports
     #[structopt(short, long)]
     list: bool,
@@ -72,6 +75,28 @@ impl Eol {
             Self::Cr => &b"\r"[..],
             Self::Crlf => &b"\r\n"[..],
             Self::Lf => &b"\n"[..],
+        }
+    }
+}
+
+/// Flow control modes
+#[derive(Debug, EnumString, EnumVariantNames, StructOpt)]
+#[strum(serialize_all = "snake_case")]
+enum FlowControlOpt {
+    /// No flow control.
+    None,
+    /// Flow control using XON/XOFF bytes.
+    Software,
+    /// Flow control using RTS/CTS signals.
+    Hardware,
+}
+
+impl From<FlowControlOpt> for FlowControl {
+    fn from(opt: FlowControlOpt) -> Self {
+        match opt {
+            FlowControlOpt::None => FlowControl::None,
+            FlowControlOpt::Software => FlowControl::Software,
+            FlowControlOpt::Hardware => FlowControl::Hardware,
         }
     }
 }
@@ -160,7 +185,7 @@ async fn main() {
     let settings = tokio_serial::SerialPortSettings {
         baud_rate: opt.baud,
         data_bits: DataBitsExt::try_from(opt.data_bits).unwrap().0,
-        flow_control: tokio_serial::FlowControl::None,
+        flow_control: opt.flow_control.into(),
         parity: opt.parity.into(),
         stop_bits: tokio_serial::StopBits::One,
         timeout: std::time::Duration::from_secs(5),
