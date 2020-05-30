@@ -6,7 +6,7 @@ use std::{io, str};
 
 use bytes::{BufMut, BytesMut};
 use futures::stream::StreamExt;
-use serialport::{FlowControl, Parity};
+use serialport::{FlowControl, Parity, StopBits};
 use structopt::clap::AppSettings;
 use structopt::StructOpt;
 use strum::{EnumString, EnumVariantNames};
@@ -36,6 +36,9 @@ struct Opt {
     /// Parity checking (none/odd/even)
     #[structopt(long, default_value = "none")]
     parity: ParityOpt,
+    /// Stop bits (1, 2)
+    #[structopt(long, default_value = "1")]
+    stop_bits: usize,
     /// Path to the serial device
     #[structopt(short, long)]
     tty: Option<PathBuf>,
@@ -122,6 +125,20 @@ impl From<ParityOpt> for Parity {
     }
 }
 
+struct StopBitsExt(StopBits);
+
+impl TryFrom<usize> for StopBitsExt {
+    type Error = ();
+
+    fn try_from(value: usize) -> Result<Self, Self::Error> {
+        match value {
+            1 => Ok(Self(StopBits::One)),
+            2 => Ok(Self(StopBits::Two)),
+            _ => Err(()),
+        }
+    }
+}
+
 struct SerialReadCodec;
 
 impl Decoder for SerialReadCodec {
@@ -187,7 +204,7 @@ async fn main() {
         data_bits: DataBitsExt::try_from(opt.data_bits).unwrap().0,
         flow_control: opt.flow_control.into(),
         parity: opt.parity.into(),
-        stop_bits: tokio_serial::StopBits::One,
+        stop_bits: StopBitsExt::try_from(opt.stop_bits).unwrap().0,
         timeout: std::time::Duration::from_secs(5),
     };
 
