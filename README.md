@@ -24,8 +24,8 @@ OPTIONS:
         --eol <eol>                      End of line transformation (cr, lf, crlf) [default: crlf]
         --flow-control <flow-control>    Flow control [default: none]
         --parity <parity>                Parity checking (none/odd/even) [default: none]
+        --stop-bits <stop-bits>          Stop bits (1, 2) [default: 1]
     -t, --tty <tty>                      Path to the serial device
-
 ```
 
 ## License
