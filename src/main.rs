@@ -211,7 +211,7 @@ async fn main() {
     println!("Opening serial connection to device {:?}", tty_path);
     let serial = tokio_serial::Serial::from_path(tty_path, &settings);
     if serial.is_err() {
-        println!("Failed to create serial port: {:?}", serial.err());
+        eprintln!("Failed to create serial port: {:?}", serial.err());
         std::process::exit(1);
     }
     let mut serial = serial.unwrap();
@@ -233,5 +233,5 @@ async fn main() {
     let output = stream.forward(framed_stdout);
     let result = futures::future::try_join(input, output).await;
 
-    println!("Uh oh: {:?}", result);
+    eprintln!("Uh oh: {:?}", result);
 }
