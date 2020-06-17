@@ -7,9 +7,9 @@ version = "0.0.0"
 
 [dependencies]
 bytes = "0.5.4"
-futures = "0.3.4"
+futures = "0.3.5"
 serialport = "3.3.0"
-structopt = "0.3.13"
+structopt = "0.3.15"
 strum = { version = "0.18.0", features = ["derive"] }
 tokio-serial = "4.3.3"
 tokio-util = { version = "0.3.1", features = ["codec"], default-features = false }
@@ -17,4 +17,4 @@ tokio-util = { version = "0.3.1", features = ["codec"], default-features = false
 [dependencies.tokio]
 default-features = false
 features = ["io-util", "io-std", "macros"]
-version = "0.2.18"
+version = "0.2.21"
