@@ -27,13 +27,13 @@ struct Opt {
     /// End of line transformation (cr, lf, crlf)
     #[structopt(long, default_value = "crlf")]
     eol: Eol,
-    /// Flow control
+    /// Flow control (none, software, hardware)
     #[structopt(long, default_value = "none")]
     flow_control: FlowControlOpt,
     /// Lists available serial ports
     #[structopt(short, long)]
     list: bool,
-    /// Parity checking (none/odd/even)
+    /// Parity checking (none, odd, even)
     #[structopt(long, default_value = "none")]
     parity: ParityOpt,
     /// Stop bits (1, 2)
