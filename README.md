@@ -22,8 +22,8 @@ OPTIONS:
     -b, --baud <baud>                    Baud rate [default: 921600]
     -d, --data-bits <data-bits>          Data bits (5, 6, 7, 8) [default: 8]
         --eol <eol>                      End of line transformation (cr, lf, crlf) [default: crlf]
-        --flow-control <flow-control>    Flow control [default: none]
-        --parity <parity>                Parity checking (none/odd/even) [default: none]
+        --flow-control <flow-control>    Flow control (none, software, hardware) [default: none]
+        --parity <parity>                Parity checking (none, odd, even) [default: none]
         --stop-bits <stop-bits>          Stop bits (1, 2) [default: 1]
     -t, --tty <tty>                      Path to the serial device
 ```
