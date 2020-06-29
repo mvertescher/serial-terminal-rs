@@ -15,12 +15,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Install apt packages
-      uses: ryankurte/action-apt@v0.1
-      with:
-        packages: "libudev-dev"
-    - uses: actions/checkout@v2
-    - name: Build
-      run: cargo build --verbose
-    - name: Run tests
-      run: cargo test --verbose
+#    - name: Install apt packages
+#      uses: ryankurte/action-apt@v0.1
+#      with:
+#        packages: "libudev-dev"
+#    - uses: actions/checkout@v2
+#    - name: Build
+#      run: cargo build --verbose
+#    - name: Run tests
+#      run: cargo test --verbose
