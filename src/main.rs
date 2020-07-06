@@ -197,7 +197,7 @@ async fn main() {
 
     let tty_path = opt
         .tty
-        .unwrap_or(PathBuf::from(&ports.first().unwrap().port_name));
+        .unwrap_or_else(|| PathBuf::from(&ports.first().unwrap().port_name));
 
     let settings = tokio_serial::SerialPortSettings {
         baud_rate: opt.baud,
