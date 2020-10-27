@@ -214,8 +214,10 @@ async fn main() {
         eprintln!("Failed to create serial port: {:?}", serial.err());
         std::process::exit(1);
     }
+    #[allow(unused_mut)]
     let mut serial = serial.unwrap();
 
+    #[cfg(unix)]
     serial
         .set_exclusive(false)
         .expect("Unable to set serial port exclusive to false");
